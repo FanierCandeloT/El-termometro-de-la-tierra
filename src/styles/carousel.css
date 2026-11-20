@@ -1,0 +1,287 @@
+/* Sección "Qué puedes hacer" (ActionsCarousel.ts).
+ * Minimalista: tarjetas Navy, texto blanco y Hot Pink solo en lo importante
+ * (dato de impacto e indicador activo). La profundidad sale de transform/opacity. */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding-top: var(--space-5);
+}
+
+.actions__head {
+  text-align: center;
+}
+
+.actions__eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white);
+  text-shadow: var(--text-shadow);
+}
+
+.actions__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: var(--text-shadow);
+}
+
+.actions__lede {
+  margin: var(--space-3) auto 0;
+  max-width: 46ch;
+  font-size: var(--fs-lg);
+  color: var(--white);
+  text-shadow: var(--text-shadow);
+}
+
+.actions__carousel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  border-radius: var(--radius);
+}
+
+.actions__carousel:focus-visible {
+  outline: 3px solid var(--white-45);
+  outline-offset: 6px;
+}
+
+/* Escenario: todas las slides comparten la misma celda (alto = la más alta) y se colocan en 3D. */
+.actions__stage {
+  display: grid;
+  width: 100%;
+  padding: var(--space-4) 0;
+  overflow: hidden;
+  perspective: 1200px;
+  touch-action: pan-y; /* el deslizamiento horizontal es del carrusel; el vertical sigue siendo scroll */
+  -webkit-user-select: none; /* arrastrar con el ratón no selecciona el texto */
+  user-select: none;
+}
+
+.actions__slide {
+  --o: 0;
+  --abs: 0;
+  grid-area: 1 / 1;
+  justify-self: center;
+  position: relative;
+  width: min(34rem, 86%);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: clamp(24px, 4vw, 40px);
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  transform-origin: center;
+  transform:
+    translate3d(calc(var(--o) * 58%), 0, calc(var(--abs) * -160px))
+    rotateY(calc(var(--o) * -18deg))
+    scale(calc(1 - var(--abs) * 0.06));
+  opacity: calc(1 - var(--abs) * 0.7);
+  z-index: calc(3 - var(--abs));
+  transition:
+    transform 0.75s var(--ease),
+    opacity 0.55s var(--ease),
+    visibility 0s linear 0.75s;
+  cursor: default;
+}
+
+.actions__slide[data-state='active'] {
+  border-color: var(--border-strong);
+}
+
+.actions__slide[data-state='prev'],
+.actions__slide[data-state='next'] {
+  cursor: pointer;
+}
+
+.actions__slide[data-state='hidden'] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.actions__slide[data-state='active'] {
+  transition-delay: 0s;
+}
+
+.actions__index {
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.actions__slide-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+}
+
+.actions__text {
+  margin: 0;
+  max-width: 38ch;
+  font-size: var(--fs-lg);
+  color: var(--text-muted);
+}
+
+/* Dato de impacto: el único acento Hot Pink dentro de la tarjeta. */
+.actions__fact {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin: var(--space-2) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.actions__fact strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 5vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--hot-pink);
+  font-variant-numeric: tabular-nums;
+}
+
+.actions__fact span {
+  flex: 1 1 14ch;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* Navegación discreta */
+.actions__nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.actions__arrow {
+  display: grid;
+  place-items: center;
+  width: var(--tap-size);
+  height: var(--tap-size);
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+}
+
+.actions__arrow:hover {
+  background: var(--white-12);
+  border-color: var(--white);
+}
+
+.actions__arrow:active {
+  transform: scale(0.94);
+}
+
+.actions__dots {
+  display: flex;
+  align-items: center;
+}
+
+/* Área táctil de 28 px con un punto de 8 px; el activo se alarga y es Hot Pink. */
+.actions__dot {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.actions__dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--white-45);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s var(--ease), background 0.3s var(--ease);
+}
+
+.actions__dot:hover::after {
+  background: var(--white);
+}
+
+.actions__dot.is-active::after {
+  width: 22px;
+  background: var(--hot-pink);
+}
+
+.actions__status {
+  /* Solo para lectores de pantalla. */
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.actions__source {
+  margin: 0;
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--white);
+  text-shadow: var(--text-shadow);
+}
+
+/* Móvil: solo se ve la slide activa (se desliza con el dedo) para que no haya ruido. */
+@media (max-width: 640px) {
+  .actions__slide {
+    width: 92%;
+  }
+
+  .actions__slide[data-state='prev'],
+  .actions__slide[data-state='next'] {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .actions__nav {
+    gap: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actions__slide,
+  .actions__dot::after {
+    transition: none;
+  }
+}
+
+.actions__source a {
+  color: var(--white);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.actions__source a:focus-visible {
+  outline: 3px solid var(--white);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
